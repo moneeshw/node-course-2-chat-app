@@ -17,10 +17,30 @@ io.on('connection', (socket)=>{
         console.log('User disconnected!');
     });
 
+    var wMsg = { 
+        from: 'Admin', 
+        text:'Welcome to Chat room', 
+        createdAt: new Date().getTime()
+    };
+    var nUserMsg = { 
+        from: 'Admin', 
+        text:'New user joined the chat room',
+        createdAt: new Date().getTime()
+    };
+    
+    socket.emit('newMessage', wMsg);
+    socket.broadcast.emit('newMessage', nUserMsg);
+
     socket.on('createMessage', (msg)=>{
         console.log('createMessage',msg);
-        msg.createdAt = new Date().getTime();
-        io.emit('newMessage', msg);
+        var mesg = {
+            from: msg.from,
+            text: msg.message,
+            createdAt : new Date().getTime()
+        };
+        
+        // io.emit('newMessage', msg);
+        socket.broadcast.emit('newMessage', mesg);
     })
 
 });
