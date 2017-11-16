@@ -15,24 +15,19 @@ var io = socketIO(server);
 io.on('connection', (socket)=>{
     console.log('New user connected!');
 
+    socket.emit('newMessage', generateMessage('Admin','Welcome to Chat room'));
+
+    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined the chat room'));
+
+    socket.on('createMessage', (msg, callback)=>{
+        console.log('createMessage',msg);
+        io.emit('newMessage', generateMessage(msg.from, msg.text));
+        callback('This is from the server');
+    });
+
     socket.on('disconnect', (socket)=>{
         console.log('User disconnected!');
     });
-
-    socket.emit('newMessage', generateMessage('Admin','Welcome to Chat room'));
-    socket.broadcast.emit('newMessage', generateMessage('Admin','New user joined the chat room'));
-
-    socket.on('createMessage', (msg)=>{
-        console.log('createMessage',msg);
-        var mesg = {
-            from: msg.from,
-            text: msg.message,
-            createdAt : new Date().getTime()
-        };
-        
-        socket.broadcast.emit('newMessage', mesg);
-    })
-
 });
 
 
