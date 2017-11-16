@@ -19,13 +19,9 @@ io.on('connection', (socket)=>{
 
     socket.on('createMessage', (msg)=>{
         console.log('createMessage',msg);
+        msg.createdAt = new Date().getTime();
+        io.emit('newMessage', msg);
     })
-
-    socket.emit('newMessage',{
-        from: 'User1',
-        message: 'Hi how are you',
-        createdAt: new Date()
-    });
 
 });
 
